@@ -223,7 +223,7 @@ namespace AimsharpWow.Modules
                 // Mana Potion
                 if (GetCheckBox("Use Mana Potion") && GetSlider("Mana Potion Mana%") <= Player.Health) if (ManaPotion.Use("ManaPotion")) return true;
                 // Healthstone
-                if (GetSlider("Healthstone HP%") <= Player.Health) if (Healthstone.Use("Healthstone")) return true;
+                if (GetSlider("Healthstone HP%") >= Player.Health) if (Healthstone.Use("Healthstone")) return true;
 
 
                 if (Target.MeleeRange)
