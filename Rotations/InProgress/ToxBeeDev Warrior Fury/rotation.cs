@@ -19,7 +19,7 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Debugmode", false));
             Settings.Add(new Setting("Test on Dummy", false));
             Settings.Add(new Setting("Game Client Language", new List<string>() { "English", "Deutsch", "Español", "Français", "Italiano", "Português Brasileiro", "Русский", "한국어", "简体中文" }, "English"));
-            
+
             Settings.Add(new Setting("Trinkets"));
             Settings.Add(new Setting("Use Top Trinket", false));
             Settings.Add(new Setting("Use Bottom Trinket", false));
@@ -44,7 +44,14 @@ namespace AimsharpWow.Modules
 
             // Settings exclusive to the class
             Settings.Add(new Setting("Specialization Settings"));
-
+            Settings.Add(new Setting("Specialization Settings"));
+            Settings.Add(new Setting("Bitter Immunity HP%", 1, 100, 60));
+            Settings.Add(new Setting("Impending Victory HP%", 1, 100, 60));
+            Settings.Add(new Setting("Enraged Regeneration HP%", 1, 100, 30));
+            Settings.Add(new Setting("Ignore Pain HP%", 1, 100, 20));
+            Settings.Add(new Setting("Rallying Cry HP%", 1, 100, 35));
+            Settings.Add(new Setting("Berserker Stance HP%", 1, 100, 40));
+            Settings.Add(new Setting("Defensive Stance HP%", 1, 100, 25));
 
         }
         public override void Initialize()
@@ -59,6 +66,10 @@ namespace AimsharpWow.Modules
 
             Helper.Initialize();
 
+            // Create a macro for Champion's Spear use on player
+            Helper.AddCastMacro("ChampionsSpearPlayer", "player", Helper.rootObject.GetStringById(376079));
+            // Create a macro for Ravager use on player
+            Helper.AddCastMacro("Ravager", "player", Helper.rootObject.GetStringById(228920));
             // Create a macro for the Pot, Healing Potion and Mana Potion
             // Create ItemCustom to use the items
             Helper.AddUseMacro("Pot", GetString("Primary Potion"));
@@ -102,7 +113,11 @@ namespace AimsharpWow.Modules
             }
 
             // Fill T-SetBonus list
-
+            Helper.SetBonus_list.Add(207182);   // Helm
+            Helper.SetBonus_list.Add(207180);   // Shoulders
+            Helper.SetBonus_list.Add(207185);   // Chest
+            Helper.SetBonus_list.Add(207183);   // Gloves
+            Helper.SetBonus_list.Add(207181);   // Legs
         }
         public override bool CombatTick()
         {
@@ -114,16 +129,59 @@ namespace AimsharpWow.Modules
             // All spells, buffs, debuffs, items and co. are stored here. created that can be used later in the rotation
             #region Define Spells, Buffs, and Debuffs
             // Spell
+            Spell Execute = new Spell(5308);
+            Spell Rampage = new Spell(184367);
+            Spell Bloodthirst = new Spell(23881);
+            Spell CrushingBlow = new Spell(335097);
+            Spell Whirlwind = new Spell(1680, "player");
+            Spell Onslaught = new Spell(315720);
+            Spell Bloodbath = new Spell(335096);
+            Spell RagingBlow = new Spell(85288);
+            Spell WreckingThrow = new Spell(384110);
+            Spell Slam = new Spell(1464);
+            Spell StormBolt = new Spell(107570);
+            Spell HeroicThrow = new Spell(57755);
 
             // Cooldown
+            Spell Ravager = new Spell(228920, "player");
+            Spell Recklessness = new Spell(1719, "player");
+            Spell Avatar = new Spell(163249, "player");
+            Spell ChampionsSpear = new Spell(376079, "player", false, true);
+            Spell OdynsFury = new Spell(385059, "player");
+            Spell ThunderousRoar = new Spell(384318, "player");
 
             // SelfHeal
+            Spell BitterImmunity = new Spell(383762, "player");
+            Spell ImpendingVictory = new Spell(202168);
+            Spell EnragedRegeneration = new Spell(184364, "player");
+            Spell IgnorePain = new Spell(190456, "player");
+            Spell RallyingCry = new Spell(97462, "player");
+            Spell DefensiveStance = new Spell(41101, "player");
+            Spell BerserkerStance = new Spell(386196, "player");
 
             // Racial
+            Spell LightsJudgment = new Spell(255647, "player");
+            Spell Berserking = new Spell(26297, "player");
+            Spell BloodFury = new Spell(20572, "player");
+            Spell Fireblood = new Spell(265221, "player");
+            Spell AncestralCall = new Spell(274738, "player");
 
             // Buff
+            Buff BuffAvatar = new Buff(163249);
+            Buff BuffEnrage = new Buff(184362);
+            Buff BuffRecklessness = new Buff(1719);
+            Buff BuffMercilessAssault = new Buff(409983);
+            Buff BuffBloodCraze = new Buff(393951);
+            Buff BuffFuriousBloodthirst = new Buff(423211);
+            Buff BuffAshenJuggernaut = new Buff(335232);
+            Buff BuffDancingBlades = new Buff(391683);
+            Buff BuffSuddenDeath = new Buff(280721);
+            Buff BuffElysianMight = new Buff(311193);
+            Buff BuffBerserkerStance = new Buff(386196);
+            Buff BuffDefensiveStance = new Buff(41101);
 
             // Debuffs
+            Debuff DebuffGushingWound = new Debuff(385042);
 
             // Trinkets
             Trinket TopTrinket = new Trinket(0, GetDropDown("Top Trinket"));
@@ -137,30 +195,140 @@ namespace AimsharpWow.Modules
 
             #endregion
 
+            // Fury functions
+            float crit_pct_current = Player.Crit + (BuffRecklessness.BuffStacks() * 20) + (BuffMercilessAssault.BuffStacks() * 10) + (BuffBloodCraze.BuffStacks() * 15);
+
+
             if (Helper.InFightCheck() || GetCheckBox("Test on Dummy"))
             {
-                
-                    // Interrupt --> Die ID vom Spell eintragen der zum unterbrechen, benutzt wird
+                //-------- SELFHEAL ---------
+                // Bitter Immunity
+                BitterImmunity.UseDefensive(GetSlider("Bitter Immunity HP%"));
+                // Impending Victory
+                ImpendingVictory.UseDefensive(GetSlider("Impending Victory HP%"));
+                // Enraged Regeneration
+                EnragedRegeneration.UseDefensive(GetSlider("Enraged Regeneration HP%"));
+                // Ignore Pain
+                IgnorePain.UseDefensive(GetSlider("Ignore Pain HP%"));
+                // Rallying Cry
+                RallyingCry.UseDefensive(GetSlider("Rallying Cry HP%"));
+                // Berserker Stance
+                if (Player.Health >= GetSlider("Berserker Stance HP%") && !BuffBerserkerStance.HasBuff()) if (BerserkerStance.Cast()) return true;
+                // Defensive Stance
+                if (Player.Health <= GetSlider("Defensive Stance HP%") && !BuffDefensiveStance.HasBuff()) if (DefensiveStance.Cast()) return true;
+
+                //-------- CONSUMABLES ---------
+                // Pot
+                if (GetCheckBox("Use Pot") && BuffRecklessness.HasBuff()) if (Pot.Use("Pot")) return true;
+                // Healing Potion
+                if (GetCheckBox("Use Healing Potion") && GetSlider("Health Potion HP%") <= Player.Health) if (HealingPotion.Use("HealingPotion")) return true;
+                // Mana Potion
+                if (GetCheckBox("Use Mana Potion") && GetSlider("Mana Potion Mana%") <= Player.Health) if (ManaPotion.Use("ManaPotion")) return true;
+                // Healthstone
+                if (GetSlider("Healthstone HP%") <= Player.Health) if (Healthstone.Use("Healthstone")) return true;
+
+
+                if (Target.MeleeRange)
+                {
+                    //-------- INTERRUPTS ---------
+                    // pummel,if=target.debuff.casting.react
                     if (!Helper.IsCustomCodeOn("NoInterrupts")) Helper.UseInterruptLogic(6552, Target, GetSlider("Random min"), GetSlider("Random max"));
-                    //-------- SELFHEAL ---------
-                    
-                    //-------- CONSUMABLES ---------
-                    // Pot
-                    if (GetCheckBox("Use Pot")) if (Pot.Use("Pot")) return true;
-                    // Healing Potion
-                    if (GetCheckBox("Use Healing Potion") && GetSlider("Health Potion HP%") <= Player.Health) if(HealingPotion.Use("HealingPotion")) return true;
-                    // Mana Potion
-                    if (GetCheckBox("Use Mana Potion") && GetSlider("Mana Potion Mana%") <= Player.Health) if(ManaPotion.Use("ManaPotion")) return true;
-                    // Healthstone
-                    if (GetSlider("Healthstone HP%") <= Player.Health) if (Healthstone.Use("Healthstone")) return true;
 
                     //-------- TRINKETS ---------
                     // Trinket 1
-                    if (GetCheckBox("Use Top Trinket") && !Helper.IsCustomCodeOn("NoCooldowns")) if (TopTrinket.useTrinket()) return true;
+                    if (GetCheckBox("Use Top Trinket") && !Helper.IsCustomCodeOn("NoCooldowns")) if (TopTrinket.useTrinket(BuffRecklessness.HasBuff())) return true;
                     // Trinket 2
-                    if (GetCheckBox("Use Bottom Trinket") && !Helper.IsCustomCodeOn("NoCooldowns")) if (BottomTrinket.useTrinket()) return true;
+                    if (GetCheckBox("Use Bottom Trinket") && !Helper.IsCustomCodeOn("NoCooldowns")) if (BottomTrinket.useTrinket(BuffRecklessness.HasBuff())) return true;
 
                     //-------------------- Rotation --------------------
+                    // berserking,if=buff.recklessness.up
+                    if (!Helper.IsCustomCodeOn("NoCooldowns") && BuffRecklessness.HasBuff()) if (Berserking.Cast()) return true;
+                    // blood_fury
+                    if (!Helper.IsCustomCodeOn("NoCooldowns")) if (BloodFury.Cast()) return true;
+                    // fireblood
+                    if (!Helper.IsCustomCodeOn("NoCooldowns")) if (Fireblood.Cast()) return true;
+
+                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (Helper.HasTalent(390135) && BuffEnrage.HasBuff() && !BuffAvatar.HasBuff() && OdynsFury.SpellCooldown() < 1000 || Helper.HasTalent(390123) && BuffEnrage.HasBuff() && !BuffAvatar.HasBuff() && !Helper.HasTalent(390135) && Target.TimeToDie > 9)) if (Avatar.Cast()) return true;
+                    // recklessness,if=talent.annihilator&cooldown.spear_of_bastion.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12
+                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (Helper.HasTalent(383916) && ChampionsSpear.SpellCooldown() < 1000 || Avatar.SpellCooldown() > 40000 || !Helper.HasTalent(107574) || Target.TimeToDie > 9)) if (Recklessness.Cast()) return true;
+                    // recklessness,if=!talent.annihilator|target.time_to_die<12
+                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (!Helper.HasTalent(383916) || Target.TimeToDie > 9)) if (Recklessness.Cast()) return true;
+                    // ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up
+                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (Ravager.SpellCooldown() < 3000 || BuffRecklessness.HasBuff())) if (Ravager.CastMacro("Ravager")) return true;
+                    // spear_of_bastion,if=buff.enrage.up&(buff.furious_bloodthirst.up&talent.titans_torment)|!talent.titans_torment|target.time_to_die<20|active_enemies>1|!set_bonus.tier31_2pc)
+                    if (!Helper.IsCustomCodeOn("NoCooldowns") && BuffEnrage.HasBuff() && (BuffFuriousBloodthirst.HasBuff() && Helper.HasTalent(390135)) || !Helper.HasTalent(390135) || Target.TimeToDie > 9 || Player.EnemiesInMelee > 1 || !Helper.HasSetBonus(2)) if (ChampionsSpear.CastMacro("ChampionsSpearPlayer")) return true;
+                    // whirlwind,if=talent.improved_whirlwind&talent.improved_whirlwind
+                    if (Helper.HasTalent(12950) && Helper.HasTalent(12950)) if (Whirlwind.Cast()) return true;
+                    // execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd
+                    if (BuffAshenJuggernaut.HasBuff() && BuffAshenJuggernaut.BuffRemaining() < Player.GCD) if (Execute.Cast()) return true;
+                    // odyns_fury,if=buff.enrage.up&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades))
+                    if (!Helper.IsCustomCodeOn("NoCooldowns") && BuffEnrage.HasBuff() && Target.TimeToDie > 9 && (Helper.HasTalent(391683) && BuffDancingBlades.BuffRemaining() < 5000 || !Helper.HasTalent(391683))) if (OdynsFury.Cast()) return true;
+                    // rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)
+                    if (Helper.HasTalent(152278) && (BuffRecklessness.HasBuff() || BuffEnrage.BuffRemaining() < Player.GCD || Player.Power > 85)) if (Rampage.Cast()) return true;
+                    // bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95
+                    if (Helper.HasSetBonus(4) && crit_pct_current >= 95) if (Bloodbath.Cast()) return true;
+                    // bloodthirst,if=(set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95)|(!talent.reckless_abandon&buff.furious_bloodthirst.up&buff.enrage.up&(!dot.gushing_wound.remains|buff.elysian_might.up))
+                    if ((Helper.HasSetBonus(4) && crit_pct_current >= 95) || (!Helper.HasTalent(396749) && BuffFuriousBloodthirst.HasBuff() && BuffEnrage.HasBuff() && (!DebuffGushingWound.HasDebuff() || BuffElysianMight.HasBuff()))) if (Bloodthirst.Cast()) return true;
+                    // bloodbath,if=set_bonus.tier31_2pc
+                    if (Helper.HasSetBonus(2)) if (Bloodbath.Cast()) return true;
+                    // thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1)
+                    if (!Helper.IsCustomCodeOn("NoCooldowns") && BuffEnrage.HasBuff() && Target.TimeToDie > 9) if (ThunderousRoar.Cast()) return true;
+                    // onslaught,if=buff.enrage.up|talent.tenderize
+                    if (BuffEnrage.HasBuff() || Helper.HasTalent(388933)) if (Onslaught.Cast()) return true;
+                    // crushing_blow,if=talent.wrath_and_fury&buff.enrage.up&!buff.furious_bloodthirst.up
+                    if (Helper.HasTalent(392936) && BuffEnrage.HasBuff() && !BuffFuriousBloodthirst.HasBuff()) if (CrushingBlow.Cast()) return true;
+                    // execute,if=buff.enrage.up&!buff.furious_bloodthirst.up&buff.ashen_juggernaut.up|buff.sudden_death.remains<=gcd&(target.health.pct>35&talent.massacre|target.health.pct>20)
+                    if (BuffEnrage.HasBuff() && !BuffFuriousBloodthirst.HasBuff() && BuffAshenJuggernaut.HasBuff() || BuffSuddenDeath.BuffRemaining() <= Player.GCD && (Target.Health > 35 && Helper.HasTalent(206315) || Target.Health > 20)) if (Execute.Cast()) return true;
+                    // rampage,if=talent.reckless_abandon&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)
+                    if (Helper.HasTalent(396749) && (BuffRecklessness.HasBuff() || BuffEnrage.BuffRemaining() < Player.GCD || Player.Power > 85)) if (Rampage.Cast()) return true;
+                    // execute,if=buff.enrage.up
+                    if (BuffEnrage.HasBuff()) if (Execute.Cast()) return true;
+                    //rampage,if=talent.anger_management
+                    if (Helper.HasTalent(152278)) if (Rampage.Cast()) return true;
+                    // execute
+                    if (Execute.Cast()) return true;
+                    // bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury
+                    if (BuffEnrage.HasBuff() && Helper.HasTalent(396749) && !Helper.HasTalent(392936)) if (Bloodbath.Cast()) return true;
+                    // rampage,if=target.health.pct<35&talent.massacre.enabled
+                    if (Target.Health < 35 && Helper.HasTalent(206315)) if (Rampage.Cast()) return true;
+                    // bloodthirst,if=(buff.enrage.down|(talent.annihilator&!buff.recklessness.up))&!buff.furious_bloodthirst.up
+                    if ((!BuffEnrage.HasBuff() || (Helper.HasTalent(383916) && !BuffRecklessness.HasBuff())) && !BuffFuriousBloodthirst.HasBuff()) if (Bloodthirst.Cast()) return true;
+                    // raging_blow,if=charges>1&talent.wrath_and_fury
+                    if (RagingBlow.SpellCharges() > 1 && Helper.HasTalent(392936) && !Helper.HasTalent(383916)) if (RagingBlow.Cast()) return true;
+                    // crushing_blow,if=charges>1&talent.wrath_and_fury&!buff.furious_bloodthirst.up
+                    if (CrushingBlow.SpellCharges() > 1 && Helper.HasTalent(392936) && !BuffFuriousBloodthirst.HasBuff()) if (CrushingBlow.Cast()) return true;
+                    // bloodbath,if=buff.enrage.down|!talent.wrath_and_fury
+                    if (!BuffEnrage.HasBuff() || !Helper.HasTalent(392936)) if (Bloodbath.Cast()) return true;
+                    // crushing_blow,if=buff.enrage.up&talent.reckless_abandon&!buff.furious_bloodthirst.up
+                    if (BuffEnrage.HasBuff() && Helper.HasTalent(396749) && !BuffFuriousBloodthirst.HasBuff()) if (CrushingBlow.Cast()) return true;
+                    //bloodthirst,if=!talent.wrath_and_fury&!buff.furious_bloodthirst.up
+                    if (!Helper.HasTalent(392936) && !BuffFuriousBloodthirst.HasBuff()) if (Bloodthirst.Cast()) return true;
+                    // raging_blow,if=charges>1
+                    if (RagingBlow.SpellCharges() > 1 && !Helper.HasTalent(383916)) if (RagingBlow.Cast()) return true;
+                    // rampage
+                    if (Rampage.Cast()) return true;
+                    // slam,if=talent.annihilator
+                    if (Helper.HasTalent(383916)) if (Slam.Cast()) return true;
+                    // bloodbath
+                    if (Bloodbath.Cast()) return true;
+                    // raging_blow
+                    if (!Helper.HasTalent(383916)) if (RagingBlow.Cast()) return true;
+                    // crushing_blow,if=!buff.furious_bloodthirst.up
+                    if (!BuffFuriousBloodthirst.HasBuff()) if (CrushingBlow.Cast()) return true;
+                    // bloodthirst
+                    if (Bloodthirst.Cast()) return true;
+                    // whirlwind
+                    if (Whirlwind.Cast()) return true;
+                    // wrecking_throw
+                    if (WreckingThrow.Cast()) return true;
+                    // HeroicThrow
+                    if (HeroicThrow.Cast()) return true;
+                    // storm_bolt
+                    if (StormBolt.Cast()) return true;
+
+                    return true;
+                }
+
             }
 
             return false;
