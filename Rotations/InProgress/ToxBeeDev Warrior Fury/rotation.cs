@@ -160,11 +160,9 @@ namespace AimsharpWow.Modules
             Spell BerserkerStance = new Spell(386196, "player");
 
             // Racial
-            Spell LightsJudgment = new Spell(255647, "player");
             Spell Berserking = new Spell(26297, "player");
             Spell BloodFury = new Spell(20572, "player");
             Spell Fireblood = new Spell(265221, "player");
-            Spell AncestralCall = new Spell(274738, "player");
 
             // Buff
             Buff BuffAvatar = new Buff(163249);
