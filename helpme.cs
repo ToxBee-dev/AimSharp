@@ -108,6 +108,10 @@ class Helper
     // 19574=Bestial Wrath
     // 19386=Wyvern Sting
 
+    bool AffixMouseoverNPC(int IdNPC);
+    // Check mouseover for affix and return true/false
+    // Check for Spiteful Shade => 174773, Afflicted Soul => 204773, Incorporeal Being => 204560
+
 }
 
 class RootObject
