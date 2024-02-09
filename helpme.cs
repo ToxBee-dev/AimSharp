@@ -223,30 +223,118 @@ class Target
 
 class Spell
 {
+    // Create a new spell that can be used later with Cast()
+    Spell(int spellId, string unit = "target", bool checkRange = true, bool checkCasting = false);
 
+    // Cast a spell and make an output in the console.
+    bool Cast();
+
+    // Cast a spell using a previously created macro
+    bool CastMacro(string Macroname);
+
+    // Cast a spell using a previously created macro. with a separate check for a unit
+    bool CastMacro(string Macroname, string Unit);
+
+    // Use the spell as a defensive cooldown with a health check
+    bool UseDefensive(int threshold);
+
+    // Returns spell cooldown
+    int SpellCooldown();
+
+    // Returns spell charges
+    int SpellCharges();
+
+    // Returns max charges
+    int MaxCharges();
+
+    // Returns recharge time
+    int RechargeTime();
+
+    // Return spell enabled status
+    bool SpellEnabled();
+    
+    // returns true if the spell is within range
+    bool SpellInRange();
+
+    // Returns true if the spell can be used and is not on cd
+    bool SpellIsReady();
 }
 
 class  Buff
 {
-    
+    // Create a new buff
+    Buff(int BuffId, string Unit = "player", bool ByPlayer = true, string Type = "");
+
+    // Check if the buff is active and return a true/false
+    bool HasBuff();
+
+    // Check if the buff is active, whether by the player or someone else and return a true/false
+    bool HasBuffByAny();
+
+    // Return the number of buff stacks
+    int BuffStacks();
+
+    // Return the buff remaining time
+    int BuffRemaining();
+
+    // Check whether the buff can be renewed based on the remaining time(ms) "timeleft"
+    bool BuffRefresh(int timeleft);
 }
 
 class  Debuff
 {
+    // Create a new debuff
+    Debuff(int DebuffId, string Unit = "target", bool ByPlayer = true, string Type = "");
     
+    // Check if the debuff is active and return a true/false
+    bool HasDebuff();
+
+    // Return the number of debuff stacks
+    int DebuffStacks();
+
+    // Return the debuff remaining time
+    int DebuffRemaining();
+
+    // Check whether the debuff can be renewed based on the remaining time(ms) "timeleft"
+    bool DebuffRefresh(int timeleft);
+
 }
 
 class  Item
 {
-    
+    // Create a new item based on the ItemID. The name of the item is then loaded from the language.json
+    Item(int ItemId, string Macroname, bool CheckIfEquipped = true);
+
+    // User the previously created item based on the macro name
+    bool Use(string Macroname);
 }
 
 class  ItemCustom
 {
-    
+    // Create a new custom item, ItemName must contain the correct name of the item
+    ItemCustom(string ItemName, string Macroname, bool CheckIfEquipped = true);
+
+    // User the previously created item based on the macro name
+    bool Use(string Macroname);
 }
 
 class  Trinket
 {
+    // Create a trinket. 
+    // TrinketSlot= 0 Top, 1 Bottom
+    // TrinketType can come from the settings, for example, general, self, frindly
+    // TrinketItem can come from the settings, This allows you to check whether a certain trinket is dressed.
+    Trinket(int TrinketSlot, string TrinketType, string TrinketItem);
+
+    // Returns the cooldown from the trinket
+    int Cooldown();
     
+    // This checks whether the trinket can be used and is not on cd
+    bool isReady();
+    
+    // Returns a true/false if the "TrinketName" is the equipped
+    bool TrinketName(string TrinketName);
+
+    // User of the trinket, with “trigger” you can give a direct review. e.g. SaveCooldowns
+    bool useTrinket(bool trigger = false);
 }
