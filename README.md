@@ -39,9 +39,9 @@ Alternatively, you can visit me and the community on Discord at: https://discord
 
 <b>Warrior</b>
 ```diff
-! Arms in creation
-! Fury in creation
-! Protection in creation
++ Arms done
++ Fury done
++ Protection done
 ```
 <b>Paladin</b>
 ```diff
