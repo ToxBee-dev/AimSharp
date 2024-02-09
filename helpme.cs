@@ -51,13 +51,13 @@ class Helper
     // It is important that when you create a macro, it always comes before integration into the lists.
 
     int GetRandomNumber(int min, int max);
-    // This function returns a random number between min and max.
-
+    // Return a random number, between min and max
+    
     bool UnitIsFocus(string unit);
-    // This function returns true if the unit is the focus.
+    // Check if the "unit" is selected as focus and return a true/false
 
     bool UnitBelowThreshold(int check);
-    // This function returns true if the unit is below the threshold.
+    // Checks whether a member of the group has less life than the threshold
 
     bool UseInterruptLogic(int SpellID, Target Obj, int MinTime, int MaxTime);
     // This function handles the logic for interrupting, inserting the spell ID of the ability that can interrupt,
@@ -94,6 +94,9 @@ class Helper
 
     void SetSpellQueue();
     // This function sets the spell queue.
+
+    bool TargetSwitch();
+    // Checks whether a targetSwitch can be carried out, if so change the target
 
     bool InFightCheck();
     // This function returns true if you are in combat.
