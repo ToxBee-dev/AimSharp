@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Dynamic;
 using ToxBeeDev;
 using AimsharpWow.API;
@@ -234,33 +234,33 @@ namespace AimsharpWow.Modules
 
                     //-------- TRINKETS ---------
                     // Trinket 1
-                    if (GetCheckBox("Use Top Trinket") && !Helper.IsCustomCodeOn("NoCooldowns")) if (TopTrinket.useTrinket(BuffRecklessness.HasBuff())) return true;
+                    if (GetCheckBox("Use Top Trinket") && !Helper.IsCustomCodeOn("SaveCooldowns")) if (TopTrinket.useTrinket(BuffRecklessness.HasBuff())) return true;
                     // Trinket 2
-                    if (GetCheckBox("Use Bottom Trinket") && !Helper.IsCustomCodeOn("NoCooldowns")) if (BottomTrinket.useTrinket(BuffRecklessness.HasBuff())) return true;
+                    if (GetCheckBox("Use Bottom Trinket") && !Helper.IsCustomCodeOn("SaveCooldowns")) if (BottomTrinket.useTrinket(BuffRecklessness.HasBuff())) return true;
 
                     //-------------------- Rotation --------------------
                     // berserking,if=buff.recklessness.up
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && BuffRecklessness.HasBuff()) if (Berserking.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && BuffRecklessness.HasBuff()) if (Berserking.Cast()) return true;
                     // blood_fury
-                    if (!Helper.IsCustomCodeOn("NoCooldowns")) if (BloodFury.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns")) if (BloodFury.Cast()) return true;
                     // fireblood
-                    if (!Helper.IsCustomCodeOn("NoCooldowns")) if (Fireblood.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns")) if (Fireblood.Cast()) return true;
 
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (Helper.HasTalent(390135) && BuffEnrage.HasBuff() && !BuffAvatar.HasBuff() && OdynsFury.SpellCooldown() < 1000 || Helper.HasTalent(390123) && BuffEnrage.HasBuff() && !BuffAvatar.HasBuff() && !Helper.HasTalent(390135) && Target.TimeToDie > 9)) if (Avatar.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && (Helper.HasTalent(390135) && BuffEnrage.HasBuff() && !BuffAvatar.HasBuff() && OdynsFury.SpellCooldown() < 1000 || Helper.HasTalent(390123) && BuffEnrage.HasBuff() && !BuffAvatar.HasBuff() && !Helper.HasTalent(390135) && Target.TimeToDie > 9)) if (Avatar.Cast()) return true;
                     // recklessness,if=talent.annihilator&cooldown.spear_of_bastion.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (Helper.HasTalent(383916) && ChampionsSpear.SpellCooldown() < 1000 || Avatar.SpellCooldown() > 40000 || !Helper.HasTalent(107574) || Target.TimeToDie > 9)) if (Recklessness.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && (Helper.HasTalent(383916) && ChampionsSpear.SpellCooldown() < 1000 || Avatar.SpellCooldown() > 40000 || !Helper.HasTalent(107574) || Target.TimeToDie > 9)) if (Recklessness.Cast()) return true;
                     // recklessness,if=!talent.annihilator|target.time_to_die<12
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (!Helper.HasTalent(383916) || Target.TimeToDie > 9)) if (Recklessness.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && (!Helper.HasTalent(383916) || Target.TimeToDie > 9)) if (Recklessness.Cast()) return true;
                     // ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (Ravager.SpellCooldown() < 3000 || BuffRecklessness.HasBuff())) if (Ravager.CastMacro("Ravager")) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && (Ravager.SpellCooldown() < 3000 || BuffRecklessness.HasBuff())) if (Ravager.CastMacro("Ravager")) return true;
                     // spear_of_bastion,if=buff.enrage.up&(buff.furious_bloodthirst.up&talent.titans_torment)|!talent.titans_torment|target.time_to_die<20|active_enemies>1|!set_bonus.tier31_2pc)
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && BuffEnrage.HasBuff() && (BuffFuriousBloodthirst.HasBuff() && Helper.HasTalent(390135)) || !Helper.HasTalent(390135) || Target.TimeToDie > 9 || Player.EnemiesInMelee > 1 || !Helper.HasSetBonus(2)) if (ChampionsSpear.CastMacro("ChampionsSpearPlayer")) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && BuffEnrage.HasBuff() && (BuffFuriousBloodthirst.HasBuff() && Helper.HasTalent(390135)) || !Helper.HasTalent(390135) || Target.TimeToDie > 9 || Player.EnemiesInMelee > 1 || !Helper.HasSetBonus(2)) if (ChampionsSpear.CastMacro("ChampionsSpearPlayer")) return true;
                     // whirlwind,if=talent.improved_whirlwind&talent.improved_whirlwind
                     if (Helper.HasTalent(12950) && Helper.HasTalent(12950)) if (Whirlwind.Cast()) return true;
                     // execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd
                     if (BuffAshenJuggernaut.HasBuff() && BuffAshenJuggernaut.BuffRemaining() < Player.GCD) if (Execute.Cast()) return true;
                     // odyns_fury,if=buff.enrage.up&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades))
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && BuffEnrage.HasBuff() && Target.TimeToDie > 9 && (Helper.HasTalent(391683) && BuffDancingBlades.BuffRemaining() < 5000 || !Helper.HasTalent(391683))) if (OdynsFury.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && BuffEnrage.HasBuff() && Target.TimeToDie > 9 && (Helper.HasTalent(391683) && BuffDancingBlades.BuffRemaining() < 5000 || !Helper.HasTalent(391683))) if (OdynsFury.Cast()) return true;
                     // rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)
                     if (Helper.HasTalent(152278) && (BuffRecklessness.HasBuff() || BuffEnrage.BuffRemaining() < Player.GCD || Player.Power > 85)) if (Rampage.Cast()) return true;
                     // bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95
@@ -270,7 +270,7 @@ namespace AimsharpWow.Modules
                     // bloodbath,if=set_bonus.tier31_2pc
                     if (Helper.HasSetBonus(2)) if (Bloodbath.Cast()) return true;
                     // thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1)
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && BuffEnrage.HasBuff() && Target.TimeToDie > 9) if (ThunderousRoar.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && BuffEnrage.HasBuff() && Target.TimeToDie > 9) if (ThunderousRoar.Cast()) return true;
                     // onslaught,if=buff.enrage.up|talent.tenderize
                     if (BuffEnrage.HasBuff() || Helper.HasTalent(388933)) if (Onslaught.Cast()) return true;
                     // crushing_blow,if=talent.wrath_and_fury&buff.enrage.up&!buff.furious_bloodthirst.up
