@@ -6,7 +6,7 @@ using AimsharpWow.API;
 namespace AimsharpWow.Modules
 {
 
-    public class Arms : Rotation            // <<<----- DON'T FORGET TO CHANGE THIS!!!
+    public class ToxBeeDevWarriorArms : Rotation            // <<<----- DON'T FORGET TO CHANGE THIS!!!
     {
         // Create Objects for Player and Target
         static Player Player = new Player();
@@ -15,7 +15,7 @@ namespace AimsharpWow.Modules
         public override void LoadSettings()
         {
             // Aimsharp rotation settings are here
-            Settings.Add(new Setting("Warrior: Arms by Bansaie"));          // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            Settings.Add(new Setting("Warrior: Arms by ToxBeeDev"));          // <<<----- DON'T FORGET TO CHANGE THIS!!!
             Settings.Add(new Setting("Debugmode", false));
             Settings.Add(new Setting("Test on Dummy", false));
             Settings.Add(new Setting("Game Client Language", new List<string>() { "English", "Deutsch", "Español", "Français", "Italiano", "Português Brasileiro", "Русский", "한국어", "简体中文" }, "English"));
@@ -55,8 +55,8 @@ namespace AimsharpWow.Modules
         {
             // -------------- SETTINGS -----------------------------
             ToxBeeDev.Settings.ClientLanguage = GetDropDown("Game Client Language");
-            ToxBeeDev.Settings.FolderName = "Bansaie_Warrior_Arms";                 // <<<----- DON'T FORGET TO CHANGE THIS!!!
-            ToxBeeDev.Settings.RotationName = "Warrior: Arms by Bansaie";   // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            ToxBeeDev.Settings.FolderName = "ToxBeeDev_Warrior_Arms";                 // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            ToxBeeDev.Settings.RotationName = "Warrior: Arms by ToxBeeDev";   // <<<----- DON'T FORGET TO CHANGE THIS!!!
             ToxBeeDev.Settings.Spec = "Warrior: Arms";                      // <<<----- DON'T FORGET TO CHANGE THIS!!!
             ToxBeeDev.Settings.ClientVersion = "1.0";
 
@@ -238,25 +238,25 @@ namespace AimsharpWow.Modules
 
                     //-------- TRINKETS ---------
                     // Trinket 1
-                    if (GetCheckBox("Use Top Trinket") && !Helper.IsCustomCodeOn("NoCooldowns")) if (TopTrinket.useTrinket(BuffAvatar.HasBuff())) return true;
+                    if (GetCheckBox("Use Top Trinket") && !Helper.IsCustomCodeOn("SaveCooldowns")) if (TopTrinket.useTrinket(BuffAvatar.HasBuff())) return true;
                     // Trinket 2
-                    if (GetCheckBox("Use Bottom Trinket") && !Helper.IsCustomCodeOn("NoCooldowns")) if (BottomTrinket.useTrinket(BuffAvatar.HasBuff())) return true;
+                    if (GetCheckBox("Use Bottom Trinket") && !Helper.IsCustomCodeOn("SaveCooldowns")) if (BottomTrinket.useTrinket(BuffAvatar.HasBuff())) return true;
 
                     //-------------------- Rotation --------------------
                     // arcane_torrent,if=cooldown.mortal_strike.remains>1.5&rage<50
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (MortalStrike.SpellCooldown() > 1500 && Player.Power < 50)) if (ArcaneTorrent.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && (MortalStrike.SpellCooldown() > 1500 && Player.Power < 50)) if (ArcaneTorrent.Cast()) return true;
                     // lights_judgment,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (!DebuffColossusSmash.HasDebuff() || !DebuffColossusSmash1.HasDebuff() && MortalStrike.SpellCooldown() > 0)) if (LightsJudgment.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && (!DebuffColossusSmash.HasDebuff() || !DebuffColossusSmash1.HasDebuff() && MortalStrike.SpellCooldown() > 0)) if (LightsJudgment.Cast()) return true;
                     // bag_of_tricks,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (!DebuffColossusSmash.HasDebuff() || !DebuffColossusSmash1.HasDebuff() && MortalStrike.SpellCooldown() > 0)) if (BagOfTricks.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && (!DebuffColossusSmash.HasDebuff() || !DebuffColossusSmash1.HasDebuff() && MortalStrike.SpellCooldown() > 0)) if (BagOfTricks.Cast()) return true;
                     // berserking,if=target.time_to_die>180&buff.avatar.up|target.time_to_die<180&(target.health.pct<35&talent.massacre|target.health.pct<20)&buff.avatar.up|target.time_to_die<20
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (Target.TimeToDie > 180 && BuffAvatar.HasBuff() || Target.TimeToDie < 180 && (Target.Health < 35 && Helper.HasTalent(281001) || Target.Health < 20) && BuffAvatar.HasBuff() || Target.TimeToDie < 20)) if (Berserking.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && (Target.TimeToDie > 180 && BuffAvatar.HasBuff() || Target.TimeToDie < 180 && (Target.Health < 35 && Helper.HasTalent(281001) || Target.Health < 20) && BuffAvatar.HasBuff() || Target.TimeToDie < 20)) if (Berserking.Cast()) return true;
                     // blood_fury,if=debuff.colossus_smash.up
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && DebuffColossusSmash.HasDebuff()) if (BloodFury.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && DebuffColossusSmash.HasDebuff()) if (BloodFury.Cast()) return true;
                     // fireblood,if=debuff.colossus_smash.up
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (DebuffColossusSmash.HasDebuff() || !DebuffColossusSmash1.HasDebuff())) if (Fireblood.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && (DebuffColossusSmash.HasDebuff() || !DebuffColossusSmash1.HasDebuff())) if (Fireblood.Cast()) return true;
                     // ancestral_call,if=debuff.colossus_smash.up
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (DebuffColossusSmash.HasDebuff() || !DebuffColossusSmash1.HasDebuff())) if (AncestralCall.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && (DebuffColossusSmash.HasDebuff() || !DebuffColossusSmash1.HasDebuff())) if (AncestralCall.Cast()) return true;
                     // whirlwind,if=buff.collateral_damage.up&cooldown.sweeping_strikes.remains<3
                     if (BuffCollateralDamage.HasBuff() && SweepingStrikes.SpellCooldown() < 3000) if (Whirlwind.Cast()) return true;
                     // sweeping_strikes,if=active_enemies>1
@@ -266,17 +266,17 @@ namespace AimsharpWow.Modules
                     // rend,if=remains<=gcd&!talent.bloodletting&(!talent.warbreaker&cooldown.colossus_smash.remains<4|talent.warbreaker&cooldown.warbreaker.remains<4)&target.time_to_die>12
                     if (DebuffRend.DebuffRemaining() <= Player.GCD && !Helper.HasTalent(383154) && (!Helper.HasTalent(262161) && ColossusSmash.SpellCooldown() < 4000 || Helper.HasTalent(262161) && Warbreaker.SpellCooldown() < 4000) && Target.TimeToDie > 9) if (Rend.Cast()) return true;
                     // avatar,if=cooldown.colossus_smash.ready|debuff.colossus_smash.up|target.time_to_die<20
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && (ColossusSmash.SpellIsReady() || DebuffColossusSmash.HasDebuff() || !DebuffColossusSmash1.HasDebuff() || Target.TimeToDie < 20)) if (Avatar.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && (ColossusSmash.SpellIsReady() || DebuffColossusSmash.HasDebuff() || !DebuffColossusSmash1.HasDebuff() || Target.TimeToDie < 20)) if (Avatar.Cast()) return true;
                     // champions_spear,if=cooldown.colossus_smash.remains<=gcd
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && ColossusSmash.SpellCooldown() <= Player.GCD) if (ChampionsSpear.CastMacro("ChampionsSpearPlayer")) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && ColossusSmash.SpellCooldown() <= Player.GCD) if (ChampionsSpear.CastMacro("ChampionsSpearPlayer")) return true;
                     // warbreaker,if=raid_event.adds.in>22
                     if (Warbreaker.Cast()) return true;
                     // colossus_smash
-                    if(!Helper.IsCustomCodeOn("NoCooldowns")) if (ColossusSmash.Cast()) return true;
+                    if(!Helper.IsCustomCodeOn("SaveCooldowns")) if (ColossusSmash.Cast()) return true;
                     // execute,if=buff.sudden_death.react&dot.deep_wounds.remains
                     if (BuffSuddenDeath.HasBuff() && DebuffDeepWounds.DebuffRemaining() > 0) if (Execute.Cast()) return true;
                     // thunderous_roar,if=(talent.test_of_might&rage<40)|(!talent.test_of_might&(buff.avatar.up|debuff.colossus_smash.up)&rage<70)
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && ((Helper.HasTalent(385008) && Player.Power < 40) || (!Helper.HasTalent(385008) && (BuffAvatar.HasBuff() || DebuffColossusSmash.HasDebuff() || DebuffColossusSmash1.HasDebuff()) && Player.Power < 70))) if (ThunderousRoar.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && ((Helper.HasTalent(385008) && Player.Power < 40) || (!Helper.HasTalent(385008) && (BuffAvatar.HasBuff() || DebuffColossusSmash.HasDebuff() || DebuffColossusSmash1.HasDebuff()) && Player.Power < 70))) if (ThunderousRoar.Cast()) return true;
                     // cleave,if=spell_targets.whirlwind>2&dot.deep_wounds.remains<=gcd
                     if (DebuffDeepWounds.DebuffRemaining() <= Player.GCD) if (Cleave.Cast()) return true;
                     // bladestorm,if=raid_event.adds.in>45&talent.hurricane&rage<40
