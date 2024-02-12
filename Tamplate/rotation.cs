@@ -152,11 +152,11 @@ namespace AimsharpWow.Modules
                     // Mana Potion
                     if (GetCheckBox("Use Mana Potion") && GetSlider("Mana Potion Mana%") <= Player.Health) if(ManaPotion.Use("ManaPotion")) return true;
                     // Healthstone
-                    if (GetSlider("Healthstone HP%") >= Player.Health) if (Healthstone.Use("Healthstone")) return true;
+                    if (GetSlider("Healthstone HP%") <= Player.Health) if (Healthstone.Use("Healthstone")) return true;
 
                     //-------- TRINKETS ---------
                     // Trinket 1
-                    if (GetCheckBox("Use Top Trinket") && !Helper.IsCustomCodeOn("NoCooldowns")) if (TopTrinket.useTrinket()) return true;
+                    if (GetCheckBox("Use Top Trinket") && !Helper.IsCustomCodeOn("SaveCooldowns")) if (TopTrinket.useTrinket()) return true;
                     // Trinket 2
                     if (GetCheckBox("Use Bottom Trinket") && !Helper.IsCustomCodeOn("NoCooldowns")) if (BottomTrinket.useTrinket()) return true;
 
