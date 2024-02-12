@@ -12,7 +12,7 @@ using AimsharpWow.Modules;
 namespace AimsharpWow.Modules
 {
 
-    public class Protection : Rotation      // <<<----- DON'T FORGET TO CHANGE THIS!!!
+    public class ToxBeeDevWarriorProtection : Rotation      // <<<----- DON'T FORGET TO CHANGE THIS!!!
     {
         // Create Objects for Player and Target
         static Player Player = new Player();
@@ -21,7 +21,7 @@ namespace AimsharpWow.Modules
         public override void LoadSettings()
         {
             // Aimsharp rotation settings are here
-            Settings.Add(new Setting("Warrior: Protection by Bansaie"));          // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            Settings.Add(new Setting("Warrior: Protection by ToxBeeDev"));          // <<<----- DON'T FORGET TO CHANGE THIS!!!
             Settings.Add(new Setting("Debugmode", false));
             Settings.Add(new Setting("Test on Dummy", false));
             Settings.Add(new Setting("Game Client Language", new List<string>() { "English", "Deutsch", "Español", "Français", "Italiano", "Português Brasileiro", "Русский", "한국어", "简体中文" }, "English"));
@@ -63,8 +63,8 @@ namespace AimsharpWow.Modules
         {
             // -------------- SETTINGS -----------------------------
             ToxBeeDev.Settings.ClientLanguage = GetDropDown("Game Client Language");
-            ToxBeeDev.Settings.FolderName = "Bansaie_Warrior_Protection";                 // <<<----- DON'T FORGET TO CHANGE THIS!!!
-            ToxBeeDev.Settings.RotationName = "Warrior: Protection by Bansaie";   // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            ToxBeeDev.Settings.FolderName = "ToxBeeDev_Warrior_Protection";                 // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            ToxBeeDev.Settings.RotationName = "Warrior: Protection by ToxBeeDev";   // <<<----- DON'T FORGET TO CHANGE THIS!!!
             ToxBeeDev.Settings.Spec = "Warrior: Protection";                      // <<<----- DON'T FORGET TO CHANGE THIS!!!
             ToxBeeDev.Settings.ClientVersion = "1.0";
 
@@ -233,46 +233,46 @@ namespace AimsharpWow.Modules
 
                     //-------- TRINKETS ---------
                     // Trinket 1
-                    if (GetCheckBox("Use Top Trinket") && !Helper.IsCustomCodeOn("NoCooldowns")) if (TopTrinket.useTrinket(BuffAvatar.HasBuff())) return true;
+                    if (GetCheckBox("Use Top Trinket") && !Helper.IsCustomCodeOn("SaveCooldowns")) if (TopTrinket.useTrinket(BuffAvatar.HasBuff())) return true;
                     // Trinket 2
-                    if (GetCheckBox("Use Bottom Trinket") && !Helper.IsCustomCodeOn("NoCooldowns")) if (BottomTrinket.useTrinket(BuffAvatar.HasBuff())) return true;
+                    if (GetCheckBox("Use Bottom Trinket") && !Helper.IsCustomCodeOn("SaveCooldowns")) if (BottomTrinket.useTrinket(BuffAvatar.HasBuff())) return true;
 
                     //-------------------- Rotation --------------------
                     // avatar
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && Target.TimeToDie > 9) if (Avatar.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (Avatar.Cast()) return true;
                     // shield_wall,if= talent.immovable_object.enabled & buff.avatar.down
                     if (Helper.HasTalent(394307) && !BuffAvatar.HasBuff()) if (ShieldWall.Cast()) return true;
                     // blood_fury
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && Target.TimeToDie > 9) if (BloodFury.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (BloodFury.Cast()) return true;
                     // berserking
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && Target.TimeToDie > 9) if (Berserking.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (Berserking.Cast()) return true;
                     // arcane_torrent
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && Target.TimeToDie > 9) if (ArcaneTorrent.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (ArcaneTorrent.Cast()) return true;
                     // lights_judgment
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && Target.TimeToDie > 9) if (LightsJudgment.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (LightsJudgment.Cast()) return true;
                     // fireblood
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && Target.TimeToDie > 9) if (Fireblood.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (Fireblood.Cast()) return true;
                     // ancestral_call
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && Target.TimeToDie > 9) if (AncestralCall.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (AncestralCall.Cast()) return true;
                     // bag_of_tricks
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && Target.TimeToDie > 9) if (BagOfTricks.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (BagOfTricks.Cast()) return true;
                     // potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=2
                     // ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled)|(rage>=70|buff.seeing_red.stack=7&rage>=35)&cooldown.shield_slam.remains<=1&buff.shield_block.remains>=4&set_bonus.tier31_2pc,use_off_gcd=1
                     if (Player.Health >= 20 && (Player.PowerDefecit <= 15 && ShieldSlam.SpellIsReady() || Player.PowerDefecit <= 40 && ShieldCharge.SpellIsReady() && Helper.HasTalent(384038) || Player.PowerDefecit <= 20 && ShieldCharge.SpellIsReady() || Player.PowerDefecit <= 30 && DemoralizingShout.SpellIsReady() && Helper.HasTalent(202743) || Player.PowerDefecit <= 20 && Avatar.SpellIsReady() || Player.PowerDefecit <= 45 && DemoralizingShout.SpellIsReady() && Helper.HasTalent(202743) && BuffLastStand.HasBuff() && Helper.HasTalent(384042) || Player.PowerDefecit <= 30 && Avatar.SpellIsReady() && BuffLastStand.HasBuff() && Helper.HasTalent(384042) || Player.PowerDefecit <= 20 || Player.PowerDefecit <= 40 && ShieldSlam.SpellIsReady() && BuffViolentOutburst.HasBuff() && Helper.HasTalent(384039) && Helper.HasTalent(384040) || Player.PowerDefecit <= 55 && ShieldSlam.SpellIsReady() && BuffViolentOutburst.HasBuff() && BuffLastStand.HasBuff() && Helper.HasTalent(384042) && Helper.HasTalent(384039) && Helper.HasTalent(384040) || Player.PowerDefecit <= 17 && ShieldSlam.SpellIsReady() && Helper.HasTalent(384040) || Player.PowerDefecit <= 18 && ShieldSlam.SpellIsReady() && Helper.HasTalent(384039))) if (IgnorePain.Cast()) return true;
                     // last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled|set_bonus.tier30_2pc|set_bonus.tier30_4pc
                     if ((Target.Health >= 90 && Helper.HasTalent(384042) || Target.Health <= 20 && Helper.HasTalent(384042)) || Helper.HasTalent(280001) || Helper.HasSetBonus(2) || Helper.HasSetBonus(4)) if (LastStand.Cast()) return true;
                     // ravager
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && Target.TimeToDie > 9) if (Ravager.CastMacro("RavagerPlayer")) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (Ravager.CastMacro("RavagerPlayer")) return true;
                     // demoralizing_shout,if=talent.booming_voice.enabled
                     if (Helper.HasTalent(202743)) if (DemoralizingShout.Cast()) return true;
                     // spear_of_bastion
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && Target.TimeToDie > 9) if (ChampionsSpear.CastMacro("ChampionsSpearPlayer")) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (ChampionsSpear.CastMacro("ChampionsSpearPlayer")) return true;
                     // thunderous_roar
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && Target.TimeToDie > 9) if (ThunderousRoar.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (ThunderousRoar.Cast()) return true;
                     // shield_slam,if=buff.fervid.up
                     if (BuffFervid.HasBuff()) if (ShieldSlam.Cast()) return true;
                     // shield_charge
-                    if (!Helper.IsCustomCodeOn("NoCooldowns") && Target.TimeToDie > 9) if (ShieldCharge.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (ShieldCharge.Cast()) return true;
                     // shield_block,if=buff.shield_block.duration<=10
                     if (BuffShieldBlock.BuffRemaining() <= 10) if (ShieldBlock.Cast()) return true;
                     // shield_slam
