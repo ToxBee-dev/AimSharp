@@ -43,13 +43,3 @@ Alternatively, you can visit me and the community on Discord at: https://discord
 + Fury done
 + Protection done
 ```
-<b>Paladin</b>
-```diff
-! Retribution in creation
-! Protection in creation
-```
-<b>Demon Hunter</b>
-```diff
-! Havoc in creation
-! Vengeance in creation
-```
