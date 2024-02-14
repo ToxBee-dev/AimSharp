@@ -12,7 +12,7 @@ using AimsharpWow.Modules;
 namespace AimsharpWow.Modules
 {
 
-    public class ToxBeeDevWarriorProtection : Rotation      // <<<----- DON'T FORGET TO CHANGE THIS!!!
+    public class Protection : Rotation      // <<<----- DON'T FORGET TO CHANGE THIS!!!
     {
         // Create Objects for Player and Target
         static Player Player = new Player();
@@ -21,9 +21,8 @@ namespace AimsharpWow.Modules
         public override void LoadSettings()
         {
             // Aimsharp rotation settings are here
-            Settings.Add(new Setting("Warrior: Protection by ToxBeeDev"));          // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            Settings.Add(new Setting("Warrior: Protection by Bansaie"));          // <<<----- DON'T FORGET TO CHANGE THIS!!!
             Settings.Add(new Setting("Debugmode", false));
-            Settings.Add(new Setting("Test on Dummy", false));
             Settings.Add(new Setting("Game Client Language", new List<string>() { "English", "Deutsch", "Español", "Français", "Italiano", "Português Brasileiro", "Русский", "한국어", "简体中文" }, "English"));
 
             Settings.Add(new Setting("Trinkets"));
@@ -63,8 +62,8 @@ namespace AimsharpWow.Modules
         {
             // -------------- SETTINGS -----------------------------
             ToxBeeDev.Settings.ClientLanguage = GetDropDown("Game Client Language");
-            ToxBeeDev.Settings.FolderName = "ToxBeeDev_Warrior_Protection";                 // <<<----- DON'T FORGET TO CHANGE THIS!!!
-            ToxBeeDev.Settings.RotationName = "Warrior: Protection by ToxBeeDev";   // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            ToxBeeDev.Settings.FolderName = "Bansaie_Warrior_Protection";                 // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            ToxBeeDev.Settings.RotationName = "Warrior: Protection by Bansaie";   // <<<----- DON'T FORGET TO CHANGE THIS!!!
             ToxBeeDev.Settings.Spec = "Warrior: Protection";                      // <<<----- DON'T FORGET TO CHANGE THIS!!!
             ToxBeeDev.Settings.ClientVersion = "1.0";
 
@@ -193,7 +192,7 @@ namespace AimsharpWow.Modules
 
             #endregion
 
-            if (Helper.InFightCheck() || GetCheckBox("Test on Dummy"))
+            if (Helper.InFightCheck())
             {
                 //-------- SELFHEAL ---------
                 // Bitter Immunity
