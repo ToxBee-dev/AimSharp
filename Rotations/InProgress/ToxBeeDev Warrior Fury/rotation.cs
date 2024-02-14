@@ -6,7 +6,7 @@ using AimsharpWow.API;
 namespace AimsharpWow.Modules
 {
 
-    public class ToxBeeDevWarriorFury : Rotation        // <<<----- DON'T FORGET TO CHANGE THIS!!!
+    public class Fury : Rotation        // <<<----- DON'T FORGET TO CHANGE THIS!!!
     {
         // Create Objects for Player and Target
         static Player Player = new Player();
@@ -15,11 +15,10 @@ namespace AimsharpWow.Modules
         public override void LoadSettings()
         {
             // Aimsharp rotation settings are here
-            Settings.Add(new Setting("Warrior: Fury by ToxBeeDev"));          // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            Settings.Add(new Setting("Warrior: Fury by Bansaie"));          // <<<----- DON'T FORGET TO CHANGE THIS!!!
             Settings.Add(new Setting("Debugmode", false));
-            Settings.Add(new Setting("Test on Dummy", false));
             Settings.Add(new Setting("Game Client Language", new List<string>() { "English", "Deutsch", "Español", "Français", "Italiano", "Português Brasileiro", "Русский", "한국어", "简体中文" }, "English"));
-
+            
             Settings.Add(new Setting("Trinkets"));
             Settings.Add(new Setting("Use Top Trinket", false));
             Settings.Add(new Setting("Use Bottom Trinket", false));
@@ -42,8 +41,6 @@ namespace AimsharpWow.Modules
             Settings.Add(new Setting("Mana Potion Mana%", 1, 100, 80));
             Settings.Add(new Setting("Healthstone HP%", 1, 100, 50));
 
-            // Settings exclusive to the class
-            Settings.Add(new Setting("Specialization Settings"));
             Settings.Add(new Setting("Specialization Settings"));
             Settings.Add(new Setting("Bitter Immunity HP%", 1, 100, 60));
             Settings.Add(new Setting("Impending Victory HP%", 1, 100, 60));
@@ -59,19 +56,19 @@ namespace AimsharpWow.Modules
             // -------------- SETTINGS -----------------------------
             ToxBeeDev.Settings.Debug = GetCheckBox("Debugmode");
             ToxBeeDev.Settings.ClientLanguage = GetDropDown("Game Client Language");
-            ToxBeeDev.Settings.FolderName = "ToxBeeDev Warrior Fury";                 // <<<----- DON'T FORGET TO CHANGE THIS!!!
-            ToxBeeDev.Settings.RotationName = "Warrior: Fury by ToxBeeDev";   // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            ToxBeeDev.Settings.FolderName = "Bansaie_Warrior_Fury";                 // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            ToxBeeDev.Settings.RotationName = "Warrior: Fury by Bansaie";   // <<<----- DON'T FORGET TO CHANGE THIS!!!
             ToxBeeDev.Settings.Spec = "Warrior: Fury";                      // <<<----- DON'T FORGET TO CHANGE THIS!!!
-            ToxBeeDev.Settings.ClientVersion = "0.1";
+            ToxBeeDev.Settings.ClientVersion = "1.0";
 
             Helper.Initialize();
 
-            // Create a macro for Champion's Spear use on player
+            // Erstelle ein Macro für Spear of Bastion mit wirken auf den Spieler selbst
             Helper.AddCastMacro("ChampionsSpearPlayer", "player", Helper.rootObject.GetStringById(376079));
-            // Create a macro for Ravager use on player
+            // Erstelle ein Macro für Ravager mit wirken auf den Spieler selbst
             Helper.AddCastMacro("Ravager", "player", Helper.rootObject.GetStringById(228920));
-            // Create a macro for the Pot, Healing Potion and Mana Potion
-            // Create ItemCustom to use the items
+            // Erstelle ein Macro für den Pot, Healing Potion und Mana Potion
+            // ItemCustom erstellen um die Items zu benutzen
             Helper.AddUseMacro("Pot", GetString("Primary Potion"));
             Helper.AddUseMacro("HealingPotion", GetString("Health Potion"));
             Helper.AddUseMacro("ManaPotion", GetString("Mana Potion"));
@@ -112,7 +109,7 @@ namespace AimsharpWow.Modules
                 CustomCommands.Add(item);
             }
 
-            // Fill T-SetBonus list
+            // T-SetBonus Liste Befüllen
             Helper.SetBonus_list.Add(207182);   // Helm
             Helper.SetBonus_list.Add(207180);   // Shoulders
             Helper.SetBonus_list.Add(207185);   // Chest
@@ -121,12 +118,11 @@ namespace AimsharpWow.Modules
         }
         public override bool CombatTick()
         {
-
-            // This always has to be at the top
+            // Das muss immer ganz oben stehen
             Player.Update();
             Target.Update();
 
-            // All spells, buffs, debuffs, items and co. are stored here. created that can be used later in the rotation
+            // Hier werden alle Spells, Buffs, Debuffs, Items und co. erstellt die in der Rotation später benutzt werden können
             #region Define Spells, Buffs, and Debuffs
             // Spell
             Spell Execute = new Spell(5308);
@@ -155,15 +151,17 @@ namespace AimsharpWow.Modules
             Spell ImpendingVictory = new Spell(202168);
             Spell EnragedRegeneration = new Spell(184364, "player");
             Spell IgnorePain = new Spell(190456, "player");
-            Spell RallyingCry = new Spell(97462, "player");
+            Spell RallyingCry = new Spell(97462, "player"); 
             Spell DefensiveStance = new Spell(41101, "player");
             Spell BerserkerStance = new Spell(386196, "player");
 
             // Racial
+            Spell LightsJudgment = new Spell(255647, "player");
             Spell Berserking = new Spell(26297, "player");
             Spell BloodFury = new Spell(20572, "player");
             Spell Fireblood = new Spell(265221, "player");
-
+            Spell AncestralCall = new Spell(274738, "player");
+         
             // Buff
             Buff BuffAvatar = new Buff(163249);
             Buff BuffEnrage = new Buff(184362);
@@ -196,8 +194,7 @@ namespace AimsharpWow.Modules
             // Fury functions
             float crit_pct_current = Player.Crit + (BuffRecklessness.BuffStacks() * 20) + (BuffMercilessAssault.BuffStacks() * 10) + (BuffBloodCraze.BuffStacks() * 15);
 
-
-            if (Helper.InFightCheck() || GetCheckBox("Test on Dummy"))
+            if (Helper.InFightCheck())
             {
                 //-------- SELFHEAL ---------
                 // Bitter Immunity
@@ -225,9 +222,9 @@ namespace AimsharpWow.Modules
                 // Healthstone
                 if (GetSlider("Healthstone HP%") >= Player.Health) if (Healthstone.Use("Healthstone")) return true;
 
-
                 if (Target.MeleeRange)
                 {
+
                     //-------- INTERRUPTS ---------
                     // pummel,if=target.debuff.casting.react
                     if (!Helper.IsCustomCodeOn("NoInterrupts")) Helper.UseInterruptLogic(6552, Target, GetSlider("Random min"), GetSlider("Random max"));
@@ -238,13 +235,25 @@ namespace AimsharpWow.Modules
                     // Trinket 2
                     if (GetCheckBox("Use Bottom Trinket") && !Helper.IsCustomCodeOn("SaveCooldowns")) if (BottomTrinket.useTrinket(BuffRecklessness.HasBuff())) return true;
 
+                    //-------- VARIABLES ---------
+                    // variable,name=trinket_1_manual,value=trinket.1.is.algethar_puzzle_box
+                    bool trinket_1_manual = TopTrinket.TrinketName("Algethar Puzzle Box");
+                    // variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box
+                    bool trinket_2_manual = BottomTrinket.TrinketName("Algethar Puzzle Box");
+                    // use_item,name=algethar_puzzle_box
+                   
+
                     //-------------------- Rotation --------------------
+                    // lights_judgment,if=buff.recklessness.down
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && !BuffRecklessness.HasBuff()) if (LightsJudgment.Cast()) return true;
                     // berserking,if=buff.recklessness.up
                     if (!Helper.IsCustomCodeOn("SaveCooldowns") && BuffRecklessness.HasBuff()) if (Berserking.Cast()) return true;
                     // blood_fury
-                    if (!Helper.IsCustomCodeOn("SaveCooldowns")) if (BloodFury.Cast()) return true;
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && Target.TimeToDie > 9) if (BloodFury.Cast()) return true;
                     // fireblood
                     if (!Helper.IsCustomCodeOn("SaveCooldowns")) if (Fireblood.Cast()) return true;
+                    // ancestral_call
+                    if (!Helper.IsCustomCodeOn("SaveCooldowns")) if (AncestralCall.Cast()) return true;
 
                     if (!Helper.IsCustomCodeOn("SaveCooldowns") && (Helper.HasTalent(390135) && BuffEnrage.HasBuff() && !BuffAvatar.HasBuff() && OdynsFury.SpellCooldown() < 1000 || Helper.HasTalent(390123) && BuffEnrage.HasBuff() && !BuffAvatar.HasBuff() && !Helper.HasTalent(390135) && Target.TimeToDie > 9)) if (Avatar.Cast()) return true;
                     // recklessness,if=talent.annihilator&cooldown.spear_of_bastion.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12
@@ -260,7 +269,7 @@ namespace AimsharpWow.Modules
                     // execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd
                     if (BuffAshenJuggernaut.HasBuff() && BuffAshenJuggernaut.BuffRemaining() < Player.GCD) if (Execute.Cast()) return true;
                     // odyns_fury,if=buff.enrage.up&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades))
-                    if (!Helper.IsCustomCodeOn("SaveCooldowns") && BuffEnrage.HasBuff() && Target.TimeToDie > 9 && (Helper.HasTalent(391683) && BuffDancingBlades.BuffRemaining() < 5000 || !Helper.HasTalent(391683))) if (OdynsFury.Cast()) return true;
+                    if (BuffEnrage.HasBuff() && Target.TimeToDie > 9 && (Helper.HasTalent(391683) && BuffDancingBlades.BuffRemaining() < 5000 || !Helper.HasTalent(391683))) if (OdynsFury.Cast()) return true;
                     // rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)
                     if (Helper.HasTalent(152278) && (BuffRecklessness.HasBuff() || BuffEnrage.BuffRemaining() < Player.GCD || Player.Power > 85)) if (Rampage.Cast()) return true;
                     // bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95
@@ -326,17 +335,26 @@ namespace AimsharpWow.Modules
 
                     return true;
                 }
-
             }
 
             return false;
         }
         public override bool OutOfCombatTick()
         {
-
-            // This always has to be at the top
+            // Das muss immer ganz oben stehen
             Player.Update();
             Target.Update();
+
+            // Spell
+            Spell BattleShout = new Spell(6673, "player");
+
+            // Buff
+            Buff BuffBattleShout = new Buff(6673);
+
+            // Rotation
+
+            // Battle Shout
+            if (!BuffBattleShout.HasBuff()) if (BattleShout.Cast()) return true;
 
             return false;
         }
