@@ -6,7 +6,7 @@ using AimsharpWow.API;
 namespace AimsharpWow.Modules
 {
 
-    public class ToxBeeDevWarriorArms : Rotation            // <<<----- DON'T FORGET TO CHANGE THIS!!!
+    public class Arms : Rotation            // <<<----- DON'T FORGET TO CHANGE THIS!!!
     {
         // Create Objects for Player and Target
         static Player Player = new Player();
@@ -15,9 +15,8 @@ namespace AimsharpWow.Modules
         public override void LoadSettings()
         {
             // Aimsharp rotation settings are here
-            Settings.Add(new Setting("Warrior: Arms by ToxBeeDev"));          // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            Settings.Add(new Setting("Warrior: Arms by Bansaie"));          // <<<----- DON'T FORGET TO CHANGE THIS!!!
             Settings.Add(new Setting("Debugmode", false));
-            Settings.Add(new Setting("Test on Dummy", false));
             Settings.Add(new Setting("Game Client Language", new List<string>() { "English", "Deutsch", "Español", "Français", "Italiano", "Português Brasileiro", "Русский", "한국어", "简体中文" }, "English"));
 
             Settings.Add(new Setting("Trinkets"));
@@ -55,8 +54,8 @@ namespace AimsharpWow.Modules
         {
             // -------------- SETTINGS -----------------------------
             ToxBeeDev.Settings.ClientLanguage = GetDropDown("Game Client Language");
-            ToxBeeDev.Settings.FolderName = "ToxBeeDev_Warrior_Arms";                 // <<<----- DON'T FORGET TO CHANGE THIS!!!
-            ToxBeeDev.Settings.RotationName = "Warrior: Arms by ToxBeeDev";   // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            ToxBeeDev.Settings.FolderName = "Bansaie_Warrior_Arms";                 // <<<----- DON'T FORGET TO CHANGE THIS!!!
+            ToxBeeDev.Settings.RotationName = "Warrior: Arms by Bansaie";   // <<<----- DON'T FORGET TO CHANGE THIS!!!
             ToxBeeDev.Settings.Spec = "Warrior: Arms";                      // <<<----- DON'T FORGET TO CHANGE THIS!!!
             ToxBeeDev.Settings.ClientVersion = "1.0";
 
@@ -201,7 +200,7 @@ namespace AimsharpWow.Modules
 
 
 
-            if (Helper.InFightCheck() || GetCheckBox("Test on Dummy"))
+            if (Helper.InFightCheck())
             {
                 //-------- SELFHEAL ---------
                 // Bitter Immunity
@@ -214,8 +213,8 @@ namespace AimsharpWow.Modules
                 // Ignore Pain
                 IgnorePain.UseDefensive(GetSlider("Ignore Pain HP%"));
                 // Rallying Cry
-                RallyingCry.UseDefensive(GetSlider("Rallying Cry HP%")); // Auch Team Mitgliedern > 3/5 - 5/25 M+/Raid Falls HP unter 35% Kann er es Casten. FURY, Prot, Arns.
-                                                                         // Battle Stance
+                RallyingCry.UseDefensive(GetSlider("Rallying Cry HP%")); // Auch Team Mitgliedern > 3/5 - 5/25 M+/Raid Falls HP unter 35% Kann er es Casten. FURY, Prot, Arms.
+                                                                         
                 if (Player.Health >= GetSlider("Battle Stance HP%") && !BuffBattleStance.HasBuff()) if (BattleStance.Cast()) return true;
                 // Defensive Stance
                 if (Player.Health <= GetSlider("Defensive Stance HP%") && !BuffDefensiveStance.HasBuff()) if (DefensiveStance.Cast()) return true;
