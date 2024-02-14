@@ -39,7 +39,7 @@ Alternatively, you can visit me and the community on Discord at: https://discord
 
 <b>Warrior</b>
 ```diff
-+ Arms done
-+ Fury done
-+ Protection done
++ Arms continue to expand
++ Fury continue to expand
++ Protection continue to expand
 ```
