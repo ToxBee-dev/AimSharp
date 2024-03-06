@@ -224,6 +224,19 @@ class Target
     // With this object, the target is created, and all its values are kept up to date with the update function.
 }
 
+class Party
+{
+    // With this object, the party is created, and all its values are kept up to date with the update function.
+    void Update();
+
+    // Return a group member with the lowest health points based on a spell if it is within range.
+    Party FindBestHealingTarget(string SpellInRange)
+
+    // Search for a debuff on a group member and return its unit.
+    // Prio = player, tank, heal, any
+    string FindDebuffOnUnit(string DebuffName, string prio = "player")
+}
+
 class Spell
 {
     // Create a new spell that can be used later with Cast()
@@ -240,6 +253,10 @@ class Spell
 
     // Use the spell as a defensive cooldown with a health check
     bool UseDefensive(int threshold);
+
+    // Cast a spell on a group member based on a debuff, for example, the Paladin's Freedom.
+    // Prio player, tank, heal, any
+    bool CastBestUnit(string Macroname, string DebuffName, string Prio = "player", bool delay = true)
 
     // Returns spell cooldown
     int SpellCooldown();
@@ -263,6 +280,36 @@ class Spell
     bool SpellIsReady();
 }
 
+class Heal
+{
+    // Create a new heal spell that can be used later
+    Spell(int spellId, string unit = "player", bool checkRange = true, bool checkCasting = false);
+
+    // Heal the player itself based on a threshold.
+    bool Player(int threshold);
+
+    // Heal a group member based on the lowest health points.
+    bool BestHealingUnit(string MacroName, int UnitBelowThreshold, bool IsMovingCheck = true);
+
+    // Heal a group member based on the lowest health points.
+    bool BestHealingUnit(int UnitBelowThreshold, bool IsMovingCheck = true);
+
+    // Heal based on the average health points of the group.
+    bool AverageHealth(int healthThreshold, bool IsMovingCheck = true);
+
+    // Function to dispel a debuff in the 5-member group.
+    bool DispelBestUnit(string Macroname, int minTime, int maxTime, bool Magic, bool Curse = false, bool Disease = false, bool Poison = false);
+
+    // Function to dispel a debuff in the 5-member group.
+    bool DispelMouseover(string Macroname, int minTime, int maxTime, bool Magic, bool Curse = false, bool Disease = false, bool Poison = false);
+
+    // Revive a dead teammate through mouseover.
+    bool RessDeadUnit(string Macroname);
+
+    // Check if the spell is ready.
+    bool SpellIsReady();
+    
+}
 class  Buff
 {
     // Create a new buff
