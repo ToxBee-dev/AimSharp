@@ -43,3 +43,9 @@ Alternatively, you can visit me and the community on Discord at: https://discord
 + Fury continue to expand
 + Protection continue to expand
 ```
+
+<b>Paladin</b>
+```diff
++ Protection In the first phase
++ Retribution In the first phase
+```
