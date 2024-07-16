@@ -1,4 +1,4 @@
-﻿// API Documentation
+// API Documentation
 // ToxBeeDev Framework class accessed through using ToxBeeDev;
 
 // In this documentation, I would like to provide you with a brief introduction to the functions that are currently available.
@@ -52,7 +52,7 @@ class Helper
 
     int GetRandomNumber(int min, int max);
     // Return a random number, between min and max
-    
+
     bool UnitIsFocus(string unit);
     // Check if the "unit" is selected as focus and return a true/false
 
@@ -101,15 +101,15 @@ class Helper
     bool InFightCheck();
     // This function returns true if you are in combat.
 
-    bool CheckListForID(int ID, List<int> List);
-    // This function returns true if the ID is in the list.
-
-    List<int> ReadListFromFile(string filename);
+    List<FileData> ReadListFromFileToObject(string PathFile);
     // This function reads a list from a file and returns it.
     // in a rotation folder, you can create a file called "list.txt" and fill it with IDs, one per line.
     // 35432=Kill Command
     // 19574=Bestial Wrath
     // 19386=Wyvern Sting
+
+    List<int> AddListFromFileAsInt(string PathFile);
+    // Create a list of integer values loaded from a file.
 
     bool AffixMouseoverNPC(int IdNPC);
     // Check mouseover for affix and return true/false
@@ -175,8 +175,8 @@ class Player
     int Mana;
     bool IsDead;
     bool InCombat;
-    int CastingID;  
-    int CastTimeRemaining;          
+    int CastingID;
+    int CastTimeRemaining;
     bool Casting;
     bool InRaid;
     bool InParty;
@@ -226,15 +226,19 @@ class Target
 
 class Party
 {
-    // With this object, the party is created, and all its values are kept up to date with the update function.
     void Update();
+    // With this object, the group is created, and all its values are kept up to date with the update function.
 
-    // Return a group member with the lowest health points based on a spell if it is within range.
-    Party FindBestHealingTarget(string SpellInRange)
-
-    // Search for a debuff on a group member and return its unit.
+    string FindDebuffOnUnit(string DebuffName, string prio = "player");
+    // Search for a buff on the unit.
     // Prio = player, tank, heal, any
-    string FindDebuffOnUnit(string DebuffName, string prio = "player")
+
+    bool CheckCombat();
+    // Check if the group is in combat.
+
+    bool CheckLineOfSighted(string unit);
+    // Check if the unit is in line of sight.
+
 }
 
 class Spell
@@ -256,7 +260,7 @@ class Spell
 
     // Cast a spell on a group member based on a debuff, for example, the Paladin's Freedom.
     // Prio player, tank, heal, any
-    bool CastBestUnit(string Macroname, string DebuffName, string Prio = "player", bool delay = true)
+    bool CastBestUnit(string Macroname, string DebuffName, string Prio = "player", bool delay = true);
 
     // Returns spell cooldown
     int SpellCooldown();
@@ -272,7 +276,7 @@ class Spell
 
     // Return spell enabled status
     bool SpellEnabled();
-    
+
     // returns true if the spell is within range
     bool SpellInRange();
 
@@ -284,33 +288,39 @@ class Heal
 {
     // Create a new heal spell that can be used later
     Spell(int spellId, string unit = "player", bool checkRange = true, bool checkCasting = false);
-
-    // Heal the player itself based on a threshold.
+    
+    // Heal the player itself based on a threshold and a check if the player is moving.
     bool Player(int threshold);
-
+    
     // Heal a group member based on the lowest health points.
     bool BestHealingUnit(string MacroName, int UnitBelowThreshold, bool IsMovingCheck = true);
 
-    // Heal a group member based on the lowest health points.
-    bool BestHealingUnit(int UnitBelowThreshold, bool IsMovingCheck = true);
-
-    // Heal based on the average health points of the group.
+    // Heal a group based on average health points.
     bool AverageHealth(int healthThreshold, bool IsMovingCheck = true);
 
-    // Function to dispel a debuff in the 5-member group.
-    bool DispelBestUnit(string Macroname, int minTime, int maxTime, bool Magic, bool Curse = false, bool Disease = false, bool Poison = false);
+    // Heal a group based on average health points and the number of players below the health percentage.
+    bool AverageHealth(int healthThreshold, int NumberOfPlayersBelowHealthPercentage, bool IsMovingCheck = true);
 
-    // Function to dispel a debuff in the 5-member group.
-    bool DispelMouseover(string Macroname, int minTime, int maxTime, bool Magic, bool Curse = false, bool Disease = false, bool Poison = false);
+    // Dispel a debuff in the group, auto focus on a unit with a debuff.
+    bool DispelUnits(string Macroname, int minTime, int maxTime);
+
+    // Dispel a debuff over mouseover.
+    bool DispelMouseover(string Macroname, bool Magic, bool Curse = false, bool Disease = false, bool Poison = false);
 
     // Revive a dead teammate through mouseover.
     bool RessDeadUnit(string Macroname);
 
     // Check if the spell is ready.
     bool SpellIsReady();
-    
+
+    // Heal a Boss, based on a list of Bosses and a health threshold.
+    bool BossHealTarget(List<int> HealBossList, int healthThreshold);
+
+    // Expand healing with more options, ideal for spreading Heal over Time effects. 
+    bool FindBestHealingUnit(string Macroname, int UnitBelowThreshold, bool IsMovingCheck = true, bool tankOnly = false, bool TankPriority = false, string checkForSpell = "none");
+
 }
-class  Buff
+class Buff
 {
     // Create a new buff
     Buff(int BuffId, string Unit = "player", bool ByPlayer = true, string Type = "");
@@ -331,11 +341,11 @@ class  Buff
     bool BuffRefresh(int timeleft);
 }
 
-class  Debuff
+class Debuff
 {
     // Create a new debuff
     Debuff(int DebuffId, string Unit = "target", bool ByPlayer = true, string Type = "");
-    
+
     // Check if the debuff is active and return a true/false
     bool HasDebuff();
 
@@ -350,7 +360,7 @@ class  Debuff
 
 }
 
-class  Item
+class Item
 {
     // Create a new item based on the ItemID. The name of the item is then loaded from the language.json
     Item(int ItemId, string Macroname, bool CheckIfEquipped = true);
@@ -359,7 +369,7 @@ class  Item
     bool Use(string Macroname);
 }
 
-class  ItemCustom
+class ItemCustom
 {
     // Create a new custom item, ItemName must contain the correct name of the item
     ItemCustom(string ItemName, string Macroname, bool CheckIfEquipped = true);
@@ -368,7 +378,7 @@ class  ItemCustom
     bool Use(string Macroname);
 }
 
-class  Trinket
+class Trinket
 {
     // Create a trinket. 
     // TrinketSlot= 0 Top, 1 Bottom
@@ -378,10 +388,10 @@ class  Trinket
 
     // Returns the cooldown from the trinket
     int Cooldown();
-    
+
     // This checks whether the trinket can be used and is not on cd
     bool isReady();
-    
+
     // Returns a true/false if the "TrinketName" is the equipped
     bool TrinketName(string TrinketName);
 
