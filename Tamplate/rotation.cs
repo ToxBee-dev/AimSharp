@@ -11,13 +11,13 @@ namespace AimsharpWow.Modules
         // Create Objects for Player and Target
         static Player Player = new Player();
         static Target Target = new Target();
+        static Party Party = new Party();
 
         public override void LoadSettings()
         {
             // Aimsharp rotation settings are here
             Settings.Add(new Setting("I`m: a dummy by Bansaie"));          // <<<----- DON'T FORGET TO CHANGE THIS!!!
             Settings.Add(new Setting("Debugmode", false));
-            Settings.Add(new Setting("Test on Dummy", false));
             Settings.Add(new Setting("Game Client Language", new List<string>() { "English", "Deutsch", "Español", "Français", "Italiano", "Português Brasileiro", "Русский", "한국어", "简体中文" }, "English"));
             
             Settings.Add(new Setting("Trinkets"));
@@ -110,6 +110,7 @@ namespace AimsharpWow.Modules
             // This always has to be at the top
             Player.Update();
             Target.Update();
+            Party.Update();
 
             // All spells, buffs, debuffs, items and co. are stored here. created that can be used later in the rotation
             #region Define Spells, Buffs, and Debuffs
@@ -137,7 +138,7 @@ namespace AimsharpWow.Modules
 
             #endregion
 
-            if (Helper.InFightCheck() || GetCheckBox("Test on Dummy"))
+            if (Helper.InFightCheck())
             {
                 
                     // Interrupt --> Die ID vom Spell eintragen der zum unterbrechen, benutzt wird
@@ -171,8 +172,18 @@ namespace AimsharpWow.Modules
             // This always has to be at the top
             Player.Update();
             Target.Update();
+            Party.Update();
 
             return false;
+        }
+
+        public override void OnStop()
+        {
+            // Clear all Caches in the rotation
+            Helper.ClearLists();
+
+            // Say Goodbye in the Aimsharp Console
+            Aimsharp.PrintMessage("Goodbye from ToxBeeDev");
         }
 
     }
